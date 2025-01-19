@@ -1,0 +1,36 @@
+from chatterbot import ChatBot
+from chatterbot.trainers import ChatterBotCorpusTrainer
+
+#chatbot
+chatbot = ChatBot(
+    'MeuChatBot',
+    storage_adapter='chatterbot.storage.SQLStorageAdapter',
+    logic_adapters=[
+        'chatterbot.logic.BestMatch',
+        'chatterbot.logic.MathematicalEvaluation',
+    ],
+    database_uri='sqlite:///database.db'
+)
+
+#chatbot em português
+trainer = ChatterBotCorpusTrainer(chatbot)
+trainer.train('chatterbot.corpus.portuguese')
+
+#interação com o usuário
+def iniciar_chat():
+    print("Olá! Eu sou o chatbot. Como posso ajudá-lo?")
+    while True:
+        try:
+            entrada_usuario = input("Você: ")
+            if entrada_usuario.lower() == 'sair':
+                print("Até logo!")
+                break
+
+            resposta = chatbot.get_response(entrada_usuario)
+            print("Bot:", resposta)
+
+        except (KeyboardInterrupt, EOFError, SystemExit):
+            break
+
+if __name__ == '__main__':
+    iniciar_chat()
